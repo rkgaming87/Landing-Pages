@@ -1,65 +1,101 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { SmoothScroll } from "@/components/SmoothScroll";
+import ImageSequenceScrub from "@/components/ImageSequenceScrub";
+import FeatureSections from "@/components/FeatureSections";
+import Preloader from "@/components/Preloader";
+import MagneticButton from "@/components/MagneticButton";
 
 export default function Home() {
+  const navRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Staggered entrance animation
+    const ctx = gsap.context(() => {
+      gsap.from(navRef.current, {
+        y: -100,
+        opacity: 0,
+        duration: 1.2,
+        ease: "expo.out",
+        delay: 1.5, // Wait for preloader
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <>
+      <Preloader />
+      <SmoothScroll>
+        <main className="relative bg-black text-white selection:bg-white selection:text-black">
+          {/* Navigation - Floating Modern Capsule */}
+          <div className="fixed top-8 w-full z-50 flex justify-center px-6">
+            <nav
+              ref={navRef}
+              className="w-full max-w-5xl grid grid-cols-3 items-center px-8 py-4 bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+              {/* Left: Logo */}
+              <div className="text-2xl font-bold tracking-tighter text-gradient">
+                Wingfi
+              </div>
+
+              {/* Center: Unique Pill Links */}
+              <div className="hidden md:flex justify-center gap-2">
+                {["Design", "Tech", "Specs"].map((item) => (
+                  <a
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    className="px-4 py-2 text-[10px] font-bold tracking-[0.2em] uppercase text-white/40 hover:text-white hover:bg-white/5 rounded-full transition-all duration-300"
+                  >
+                    {item}
+                  </a>
+                ))}
+              </div>
+
+              {/* Right: Modern Action */}
+              <div className="flex justify-end items-center gap-4">
+                <div className="h-4 w-[1px] bg-white/10 hidden md:block mr-2" />
+                <MagneticButton>
+                  <button className="group relative flex items-center justify-center px-8 py-3 bg-white text-black text-[10px] font-black uppercase tracking-[0.3em] rounded-full overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95">
+                    <span className="relative z-10">Notify</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                </MagneticButton>
+              </div>
+            </nav>
+          </div>
+
+          {/* Image Sequence Experience (Hero is now integrated) */}
+          <ImageSequenceScrub frameCount={240}>
+            <FeatureSections />
+          </ImageSequenceScrub>
+
+          {/* Footer */}
+          <footer className="py-20 px-10 border-t border-white/10 text-center">
+            <div className="text-4xl font-bold mb-6 tracking-tighter uppercase">
+              Wingfi
+            </div>
+            <p className="text-white/40 max-w-md mx-auto mb-10">
+              Designed by Apple in California. Experience the next era of
+              portable power.
+            </p>
+            <div className="flex justify-center gap-6 text-sm text-white/60">
+              <a href="#" className="hover:text-white transition-colors">
+                Twitter
+              </a>
+              <a href="#" className="hover:text-white transition-colors">
+                Instagram
+              </a>
+              <a href="#" className="hover:text-white transition-colors">
+                YouTube
+              </a>
+            </div>
+          </footer>
+        </main>
+      </SmoothScroll>
+    </>
   );
 }
